@@ -1,39 +1,40 @@
 require './player'
 require './question'
 
-player1 = Player.new
-player2 = Player.new
-q = Question.new
+player1 = Player.new("player1")
+puts "Change name of player1:"
+player1.name = gets.chomp
+player2 = Player.new("player2")
+puts "Change name of player2:"
+player2.name = gets.chomp
 turn = 1
 
 define_method :new_turn do
   turn += 1
-  q = Question.new
   puts "----- NEW TURN -----"
   puts "P1 Lives: #{player1.lives} P2 Lives: #{player2.lives}"
 end
 
 while player1.lives != 0 && player2.lives != 0
   if turn % 2 === 0
-    current_player = {player: player2, name: "Player 2"}
+    current_player = player2
   else
-    current_player = {player: player1, name: "Player 1"}
+    current_player = player1
   end
 
-  puts "#{current_player[:name]}: What does #{q.num1} + #{q.num2} equal?"
+  q = Question.new
+  puts "#{current_player.name}: #{q.prompt}"
   player_answer = gets.chomp.to_i
 
   if player_answer === q.answer
     puts "yes"
-    current_player[:player].add_points
     new_turn
   else
     puts "no"
-    current_player[:player].lose_life
-    if current_player[:player].lives === 0
+    current_player.lose_life
+    if current_player.lives === 0
       puts "----- GAME OVER -----"
-      puts "#{current_player[:name]} ran out of lives!"
-      puts "P1 Score: #{player1.points} P2 Score: #{player2.points}"
+      puts "#{current_player.name} ran out of lives!"
       break
     end
     new_turn
